@@ -1,7 +1,7 @@
 Mandelbrot.js
 =============
 
-Vanilla Mandelbrot Set renderer in HTML5 canvas and javascript.
+Vanilla Mandelbrot Set renderer in HTML5 canvas and JavaScript.
 
 This code running in action can be seen at http://mandelbrot-set.com
 
@@ -29,7 +29,7 @@ complex plane,
   `C_{0} = x + iy`
 
 Looking at the function, one can easily see that for big initial values, the
-function should diverge.  But for values close to origo (i.e., for |x| and
+function should diverge.  But for values close to origin (i.e., for |x| and
 |y| less than 1), we would expect the function to converge to zero, since
 the product of two numbers less than one will always be less than either of
 the factors (e.g., 0.5 x 0.4 = 0.2, which is less than both factors).
@@ -40,7 +40,7 @@ we get an amazingly complex and fractured plot.  This is the Mandelbrot set.
 You can zoom forever into the plot, and it will present you with an unending
 complex shape.  One can also calculate it's
 so-called [Hausdorff dimension](http://en.wikipedia.org/wiki/Hausdorff_dimension),
-which yields a noninteger number.  Thus, it's a fractal.
+which yields a non-integer number.  Thus, it's a fractal.
 
 Calculating the Mandelbrot Set
 ------------------------------
@@ -50,13 +50,13 @@ Calculating the Mandelbrot set is easy if you do it numerically.
 Take any point `C_0 = (x, y)` and then calculate `C_1 = (x+iy)^2 + (x+iy)`
 and continue doing this.  For practical purposes, let's predetermine a
 _threshold_ value.  If the magnitude of `C` (defined for complex numbers
-as being the distance to origo, or `sqrt(x^2+y^2)`) ever becomes larger than
+as being the distance to the origin, or `sqrt(x^2+y^2)`) ever becomes larger than
 this threshold value we will assume that it will diverge into infinity.  
-If so, stop the calculation and plot a _black dot_ at the current location.
+If so, stop the calculation and plot a _non-black dot_ at the current location.
 
 If `C` has not exceeded the threshold value after a predetermined number of
 iterations, we will assume that the current parameters makes the function
-converge.  In this case, plot a non-black dot at the current location.
+converge.  In this case, plot a black dot at the current location.
 
 Colorizing the plot
 -------------------
@@ -139,10 +139,10 @@ possible.  So the tricks mentioned here are all cases of
 _micro-optimizations_.  Nevertheless, they will improve the running time
 quite a lot.
 
-We also have to remember that we're using Javascript here, which is a
+We also have to remember that we're using JavaScript here, which is a
 relatively slow language because of its dynamic nature.  What's interesting
 in this regard, though, is to identify performance hot spots in the typical
-javascript engines.  It's interesting to test the code on different browsers.
+JavaScript engines.  It's interesting to test the code on different browsers.
 
 Removing the square root operation
 ----------------------------------
@@ -153,7 +153,7 @@ Observe that it takes the square root in doing so:
 
     if ( sqrt(x^2 + y^2) > threshold ) ...
 
-If we just square the treshold value, we should be able to do away with the
+If we just square the threshold value, we should be able to do away with the
 square root operation:
 
     threshold_squared = threshold^2
@@ -176,7 +176,7 @@ The main equation is
 Setting `Cr = Re(C)` and `Ci = Im(C)`, we get
 
     C_{n+1} = Cr^2 + 2Cr*Ci*i - Ci*Ci + C_{0}
-    C_{n+1} = (Cr^2 - Ci^2) + i(2Cr*Ci) + C_{0}
+    C_{n+1} = (Cr^2 - Ci^2) + (2Cr*Ci)*i + C_{0}
 
 giving us
 
@@ -193,8 +193,8 @@ If we introduce two variables `Tr = Cr^2` and `Ti = Ci^2`, we get
     Ti             = Im(C_{n+1}))^2
 
 So we have now replaced some multiplications with additions, which is
-normally faster in most CPUs.  But, again, this is javascript, and
-javascript has quite a different performance profile.  The code above indeed
+normally faster in most CPUs.  But, again, this is JavaScript, and
+JavaScript has quite a different performance profile.  The code above indeed
 does _not_ give us any **significant** speedup --- for a 640x480 image, we
 only save a hundred milliseconds, or so.
 
@@ -218,9 +218,9 @@ so that you can now set the RGBA values as
 
 There are several ways of optimizing this.  For instance, we can simply
 multiply the whole offset by four, which is the same as shifting all bits
-left two positions.  However, javascript works in mysterious ways, so the
+left two positions.  However, JavaScript works in mysterious ways, so the
 customary shift operations may not be as fast as in other languages like C
-and C++.  The reason _probably_ has to do with the fact that javascript only
+and C++.  The reason _probably_ has to do with the fact that JavaScript only
 has _one_ data type for numbers, and my guess is that it's some kind of
 float.
 
@@ -236,7 +236,7 @@ be notice that 640 = 512 + 128 = 2^9 + 2^7, giving us
 
 So now we've converted one multiplication into two shifts and an add.  In
 your commodity language and hardware, this might be quite fast in tight
-innerloops.
+inner-loops.
 
 Anyway, we still want to be able to use arbitrary heights and widths, so
 let's skip that one.
@@ -304,19 +304,19 @@ Such algorithms are colloquially called
 [embarrassingly parallel](http://en.wikipedia.org/wiki/Embarrassingly_parallel).
 
 Now, JavaScript is inherently single-threaded:  You can only use so-called
-green threads, meaning that the javascript engine will yield control between
+green threads, meaning that the JavaScript engine will yield control between
 them.
 
-However, there is a new HTML5 APi called web workers that you can use to
+However, there is a new HTML5 API called web workers that you can use to
 create real, OS-level threads.  That should make it easy to split up
-plotting into several threads (preferrably one per logical core).
+plotting into several threads (preferably one per logical core).
 
 Using vectorized procedures
 ---------------------------
 
 The algorithm is very well suited for vector operations.  Most modern
 computers come with hardware optimizations for such operations (SSE, etc).
-However, we are again limited to what the javascript engines will do for us.
+However, we are again limited to what the JavaScript engines will do for us.
 
 Even more optimizations
 -----------------------
