@@ -89,7 +89,7 @@ function getSamples()
  *
  * Returns number of iterations and values of Z_{n}^2 = Tr + Ti at the time
  * we either converged (n == iterations) or diverged.  We use these to
- * determined the color at the current pixel.
+ * determined the color at the current cell.
  *
  * The Mandelbrot set is rendered taking
  *
@@ -433,7 +433,7 @@ function draw(pickColor, superSamples)
       var now = (new Date).getTime();
 
       /*
-       * Javascript is inherently single-threaded, and the way
+       * JavaScript is inherently single-threaded, and the way
        * you yield thread control back to the browser is MYSTERIOUS.
        *
        * People seem to use setTimeout() to yield, which lets us
@@ -491,7 +491,12 @@ function smoothColor(steps, n, Tr, Ti)
    *
    * but can be simplified using some elementary logarithm rules to
    */
-  return 5 + n - logHalfBase - Math.log(Math.log(Tr+Ti))*logBase;
+   
+	if ( $('colorSmoothing').checked ) {
+		return 5 + n - logHalfBase - Math.log(Math.log(Tr+Ti))*logBase;
+	} else {
+		return n
+	}
 }
 
 function pickColorHSV1(steps, n, Tr, Ti)
