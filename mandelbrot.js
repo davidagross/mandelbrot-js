@@ -345,21 +345,28 @@ function draw(pickColor, superSamples)
   var escapeRadius = Math.pow(parseFloat($('escapeRadius').value), 2.0);
   var dx = (xRange[1] - xRange[0]) / (0.5 + (canvas.width-1));
   var dy = (yRange[1] - yRange[0]) / (0.5 + (canvas.height-1));
-  var Ci_step = (yRange[1] - yRange[0]) / (0.5 + (canvas.height-1));
-
+  var pw = $('patternWidth').value;
+  var ph = $('patternHeight').value;
+  var dr = (xRange[1] - xRange[0]) / (0.5 + (pw-1));
+  var Ci_step = (yRange[1] - yRange[0]) / (0.5 + (ph-1));
+  var dwpx = Math.round(canvas.width / pw);
+  var dhpx = Math.round(canvas.height / ph);
+  
   updateHashTag(superSamples, steps);
   updateInfoBox();
 
   // Only enable one render at a time
   renderId += 1;
 
-  function drawLineSuperSampled(Ci, off, Cr_init, Cr_step)
+  function drawLineSuperSampled(Ci, off, Cr_init, Cr_step, px_step)
   {
     var Cr = Cr_init;
 
-    for ( var x=0; x<canvas.width; ++x, Cr += Cr_step ) {
+    for ( var x=0; x<canvas.width; ++x ) {
       var color = [0, 0, 0, 255];
 
+	  if ( x / px_step % 1 == 0 ) { Cr += Cr_step; }
+	  
       for ( var s=0; s<superSamples; ++s ) {
         var rx = Math.random()*Cr_step;
         var ry = Math.random()*Ci_step;
@@ -376,11 +383,14 @@ function draw(pickColor, superSamples)
     }
   }
 
-  function drawLine(Ci, off, Cr_init, Cr_step)
+  function drawLine(Ci, off, Cr_init, Cr_step, px_step)
   {
     var Cr = Cr_init;
 
-    for ( var x=0; x<canvas.width; ++x, Cr += Cr_step ) {
+    for ( var x=0; x<canvas.width; ++x ) {
+	
+	  if ( x / px_step % 1 == 0 ) { Cr += Cr_step; }
+	
       var p = iterateEquation(Cr, Ci, escapeRadius, steps);
       var color = pickColor(steps, p[0], p[1], p[2]);
       img.data[off++] = color[0];
@@ -425,8 +435,8 @@ function draw(pickColor, superSamples)
         return;
       }
 
-      drawLineFunc(Ci, 0, xRange[0], dx);
-      Ci += Ci_step;
+      drawLineFunc(Ci, 0, xRange[0], dr, dwpx);
+	  if ( sy / dhpx % 1 == 0 ) { Ci += Ci_step; }
       pixels += canvas.width;
       ctx.putImageData(img, 0, sy);
 
