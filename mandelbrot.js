@@ -1,5 +1,11 @@
 /*
  * The Mandelbrot Set, in HTML5 canvas and javascript.
+ * https://github.com/davidagross/mandelbrot-js
+ *
+ * Copyright (C) 2014 David Alexander Gross
+ *
+ * Based on:
+ *
  * https://github.com/cslarsen/mandelbrot-js
  *
  * Copyright (C) 2012 Christian Stigen Larsen
